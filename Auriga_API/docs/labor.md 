@@ -1,0 +1,339 @@
+# Flujo de Autenticación y Autorización con Authentik
+
+## Descripción General
+Sistema completo de autenticación OAuth2 con Authentik como proveedor de identidad, integrado con autorización basada en roles organizacionales y persistencia en base de datos.
+
+## Arquitectura del Sistema
+
+├── internal/
+│   ├── httpapi/
+│   │   ├── handlers/
+│   │   │   └──  hLabor/
+│   │   │       ├── hAuth.go
+│   │   │       ├── hLaborShift.go
+│   │   │       ├── hLaborShiftAssig.go 
+│   │   │       └── hLaborTeam.go
+│   ├── repositories/
+│   │   ├──  rLabor/
+│   │   │   ├── rLabor.go
+│   │   │   ├── rLaborShift.go
+│   │   │   ├── rLaborShiftAssig.go 
+│   │   │   └── rLaborTeam.go
+│   │   └──  rModels/
+│   │       └── rmLabor.go
+│   └── services/
+│       └──  sLabor/
+│           ├── sLabor.go
+│           ├── sLaborShift.go
+│           ├── sLaborShiftAssig.go      
+│           └── sLaborTeam.go
+
+# Flujo Completo de Autenticación y Autorización con Authentik
+
+## 1. Inicio del Proceso de Autenticación
+
+### 1.1 Página de Login
+
+**Función**: hAuthStatic.go - loginPageHandler()
+
+Cuando un usuario visita la aplicación:
+
+- Si no tiene una sesión activa, es redirigido a /login
+- Se muestra una página HTML con un botón "Iniciar Sesión con Authentik"
+- El botón redirige al endpoint /auth/login
+
+### 1.2 Generación de URL de Authentik
+
+**Función**: hAuthUser.go - loginHandler()
+
+Al hacer clic en el botón de login:
+
+- Se genera un estado aleatorio (state) para protección contra CSRF
+- Se construye la URL de autorización de Authentik con los parámetros:
+  - client_id: Identificador de la aplicación en Authentik
+  - redirect_uri: URL de callback (/auth/callback)
+  - scope: Permisos solicitados (openid, email, profile, groups)
+  - state: Token anti-CSRF
+- El usuario es redirigido a la página de login de Authentik
+
+## 2. Procesamiento en Authentik
+
+### 2.1 Autenticación en Authentik
+
+El usuario:
+
+- Ingresa sus credenciales en la interfaz de Authentik
+- Authentik valida las credenciales contra su backend
+- Si son válidas, genera un código de autorización
+- Redirige al usuario de vuelta a la aplicación con el código: /auth/callback?code=XXX&state=XXX
+
+## 3. Procesamiento del Callback
+
+### 3.1 Intercambio de Código por Token
+
+**Función**: hAuthUser.go - authCallbackHandler()
+
+La aplicación recibe el callback y:
+
+- Valida el estado para prevenir ataques CSRF
+- Intercambia el código por tokens llamando a sAuthAuth.go - ExchangeCode()
+  - Realiza una llamada POST al endpoint de tokens de Authentik
+  - Recibe access_token, refresh_token, y id_token
+- Obtiene información del usuario llamando a sAuthAuth.go - GetUserInfo()
+  - Usa el access_token para llamar al endpoint userinfo de Authentik
+  - Recibe los datos del usuario incluyendo grupos y organización
+
+### 3.2 Sincronización con Base de Datos
+
+**Función**: rAuth.go - SyncUser()
+
+La información del usuario se sincroniza con la base de datos:
+
+**Búsqueda del Empleado:**
+
+- Primero busca por authentik_id (campo principal)
+- Si no existe, busca por email (fallback)
+- Si no existe en absoluto, crea un nuevo registro en mr_employees
+
+**Creación de Nuevo Empleado:**
+
+- authentik_id: ID único de Authentik
+- idn: Extraído de organization.idn en el JWT
+- workday_id: Extraído de organization.workday_id
+- first_name y last_name: Extraídos del campo name
+- email: Email del usuario
+- Campos adicionales: status, departamento, cargo, tipo_empleado
+
+### 3.3 Sincronización de Roles y Estructura Organizacional
+
+**Función**: rAuth.go - SyncAuthentikRoles()
+
+**Proceso de Sincronización:**
+
+- Desactivar roles existentes: Marca todos los roles actuales como inactivos
+- Procesar cada fábrica del JWT:
+  - Para cada fábrica (ej: "CXC", "CXM"):
+    - Crear/obtener fábrica: GetOrCreateFactory()
+      - Busca en mr_factories por nombre
+      - Si no existe, la crea mapeándola con el asset correspondiente
+    - Procesar departamentos:
+      - Para cada departamento (ej: "Quality", "Maintenance"):
+        - Crear/obtener departamento: GetOrCreateDepartment()
+        - Crear relación fábrica-departamento: getOrCreateFactoryDepartment()
+        - Procesar roles:
+          - Para cada rol (ej: "Supervisor", "Planner"):
+            - Si el rol ya existe, reactivarlo
+            - Si no existe, crear nuevo registro en mr_employee_authentik_roles
+- Crear asignación empleado-fábrica-departamento: ensureEmployeeFactoryDepartment()
+- Limpiar roles antiguos: Elimina roles inactivos por más de 30 días
+
+### 3.4 Mapeo de Fábricas con Assets
+
+**Función**: rAuth.go - findAssetByFactoryCode()
+
+Para cada fábrica del JWT:
+
+- Se busca el asset correspondiente en mr_assets usando el código
+- Mapeo predefinido:
+  - "CXC" → Asset con código "CXC" (Chile)
+  - "CXM" → Asset con código "CXM" (Mexico)
+  - "CXB" → Asset con código "CXB" (Brasil)
+  - etc.
+- Si no se encuentra el asset, se retorna error
+
+### 3.5 Establecimiento de Cookies
+
+**Función**: hAuthUser.go - authCallbackHandler()
+
+Se establecen tres cookies:
+
+- auth_token: Cookie HTTP-only con el JWT (seguridad)
+- user_data: Cookie con información básica del usuario (base64 encoded)
+- session_active: Cookie indicando que hay una sesión activa
+
+### 3.6 Redirección al Dashboard
+
+Finalmente, el usuario es redirigido a /dashboard donde puede ver su información y acceder a la aplicación.
+
+## 4. Middleware de Validación
+
+### 4.1 Middleware Combinado
+
+**Función**: middlewares.go - CombinedMiddleware()
+
+En cada request a rutas protegidas:
+
+**Extracción del Token:**
+
+- Primero intenta obtener de header Authorization: Bearer <token>
+- Si no hay header, busca en cookie auth_token
+
+**Validaciones:**
+
+- Verificación de revocación: sAuthAuth.go - IsTokenRevoked()
+  - Consulta si el token está en la blacklist
+- Validación JWT: sAuthValidator.go - ValidateToken()
+  - Verifica firma usando JWKS de Authentik
+  - Valida expiración y claims requeridos
+- Establecimiento de contexto: middlewares.go - setUserContext()
+
+### 4.2 Establecimiento del Contexto
+
+**Función**: middlewares.go - setUserContext()
+
+Extrae y establece en el contexto de Echo:
+
+**Información Básica:**
+
+- user_id: Subject del JWT (authentik_id)
+- user_email: Email del usuario
+- user_name: Nombre completo
+- user_groups: Grupos de Authentik
+
+**Información Organizacional:**
+
+- user_organization: Estructura completa de organización
+- workday_id, idn, employee_status: Datos del empleado
+- department, position, employee_type: Información laboral
+- user_factories: Mapa de fábricas y departamentos
+- factory_names: Lista de nombres de fábricas
+- user_roles_flat: Lista plana de todos los roles
+
+**Claims Completos:**
+
+- user_claims: Todos los claims del JWT para acceso directo
+
+## 5. Middlewares de Autorización
+
+### 5.1 Validación por Grupos
+
+**Función**: middlewares.go - RequireGroup()
+
+Verifica que el usuario pertenezca a un grupo específico de Authentik:
+
+- Extrae los grupos del contexto
+- Verifica si el grupo requerido está presente
+- Retorna error 403 si no tiene el grupo
+
+### 5.2 Validación por Roles Organizacionales
+
+**Función**: middlewares.go - RequireOrganizationRole()
+
+Verifica que el usuario tenga un rol específico en una fábrica y departamento:
+
+- Obtiene la organización del contexto
+- Busca el rol en la estructura de fábricas/departamentos
+- Retorna error 403 si no tiene el rol
+
+### 5.3 Validación por Acceso a Fábrica
+
+**Función**: middlewares.go - RequireFactory()
+
+Verifica que el usuario tenga acceso a una fábrica específica:
+
+- Consulta si la fábrica está en su estructura organizacional
+- No verifica roles específicos, solo acceso general
+
+### 5.4 Validaciones Múltiples
+
+**Funciones:**
+
+- RequireAnyGroup(): Cualquiera de los grupos listados
+- RequireAllGroups(): Todos los grupos listados
+
+## 6. Uso en Handlers de la API
+
+### 6.1 Obtención de Información del Usuario
+
+**Función**: hAuthLogin.go - getCurrentUserHandler()
+
+Endpoints que proporcionan información del usuario:
+
+- /api/users/me: Información completa del empleado
+- /api/profile: Perfil básico
+- /api/my-groups: Grupos y roles del usuario
+
+### 6.2 Dashboard
+
+**Función**: hAuthStatic.go - dashboardHandler()
+
+Renderiza el dashboard con:
+
+- Información del usuario desde cookies y contexto
+- Estructura organizacional desde el JWT
+- Roles y permisos
+- Estadísticas de fábricas y departamentos
+
+### 6.3 Validación en Handlers Específicos
+
+Los handlers pueden validar permisos directamente:
+
+```go
+userID, userEmail, userName, userGroups, organization := getUserInfoFromContext(c)
+if !hasFactoryAccess(organization, "CXC") {
+    return echo.NewHTTPError(http.StatusForbidden, "No access to CXC")
+}
+
+## 6. Proceso de Logout
+
+### 6.1 Logout Handler
+
+**Función**: hAuthLogin.go - logoutHandler()
+
+Renderiza el dashboard con:
+
+- Obtener información del usuario antes de limpiar el contexto
+- Revocar token: Agregar a blacklist con fecha de expiración
+- Limpiar cookies: Establecer cookies con fecha de expiración en el pasado
+- Limpiar cache: Eliminar cache del usuario
+- Registrar logout: Log informativo con detalles del usuario
+
+### 7.2 Blacklist de Tokens
+
+**Función**: sAuthBlacklist.go - Add()
+
+- Los tokens revocados se almacenan en memoria
+- Se limpian automáticamente cuando expiran
+- Previene reuso de tokens después del logout
+
+## 8. Estructura de Datos Persistida
+
+### 8.1 Tablas Principales
+
+- mr_employees: Información principal de empleados
+- mr_factories: Fábricas mapeadas con assets
+- mr_departments: Departamentos organizacionales
+- mr_factory_department: Relación fábricas-departamentos
+- mr_employee_authentik_roles: Roles persistidos del usuario
+- mr_employee_factory_department: Asignación empleado a fábricas
+
+### 8.2 Ventajas de la Persistencia
+
+- Consultas SQL: Puedes hacer queries complejas por fábrica/rol
+- Historial: Seguimiento de cambios en roles
+- Independencia: Funciona incluso si Authentik está caído
+- Auditoría: Registro de cuándo se asignaron roles
+
+## 9. Endpoints de Debug
+
+### 9.1 Información de Token
+
+- /api/token-info: Información estructurada del token
+- /api/token-debug: Análisis detallado del JWT
+- /api/my-groups: Grupos y roles actuales
+
+### 9.2 Logs de Debug
+
+- Autenticación exitosa
+- Sincronización de roles
+- Creación automática de fábricas/departamentos
+- Errores de validación
+
+    
+
+## 10. Flujo Resumido
+
+- Usuario → /login → Authentik → /auth/callback → Validar Token → Sincronizar BD → Establecer Cookies → Dashboard → Middleware Validación → API Handlers
+
+
+Este flujo proporciona un sistema completo que integra autenticación OAuth2 con autorización basada en roles organizacionales, manteniendo persistencia en base de datos y ofreciendo múltiples niveles de control de acceso.

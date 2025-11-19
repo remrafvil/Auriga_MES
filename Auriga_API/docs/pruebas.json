@@ -1,0 +1,188 @@
+ // POST /shifts
+{
+  "name": "MF_Morning",
+  "start_time": "2024-01-01T08:00:00Z",
+  "end_time": "2024-01-01T16:00:00Z",
+  "description": "Turno de mañana de lunes a viernes",
+  "tolerance": 15
+}
+
+{
+  "name": "MF_Afternoon",
+  "start_time": "2024-01-01T16:00:00Z",
+  "end_time": "2024-01-01T00:00:00Z",
+  "description": "Turno de tarde de lunes a viernes",
+  "tolerance": 15
+}
+
+{
+  "name": "MF_Night",
+  "start_time": "2024-01-01T00:00:00Z",
+  "end_time": "2024-01-01T08:00:00Z",
+  "description": "Turno nocturno de lunes a viernes",
+  "tolerance": 20
+}
+
+// Turnos especiales
+
+{
+  "name": "MF_DayShift",
+  "start_time": "2024-01-01T07:00:00Z",
+  "end_time": "2024-01-01T19:00:00Z",
+  "description": "Turno de día completo",
+  "tolerance": 10
+}
+
+{
+  "name": "Emergency_Shift",
+  "start_time": "2024-01-01T00:00:00Z",
+  "end_time": "2024-01-02T00:00:00Z",
+  "description": "Turno de emergencia 24h",
+  "tolerance": 30
+}
+
+// Crear equipos
+
+{
+  "factory_id": 1,
+  "department_id": 1,
+  "name": "Equipo de Producción A",
+  "description": "Equipo encargado de la línea de producción principal",
+  "leader_id": 1
+}
+
+{
+  "factory_id": 1,
+  "department_id": 2,
+  "name": "Equipo de Mantenimiento",
+  "description": "Equipo de mantenimiento preventivo y correctivo",
+  "leader_id": 2
+}
+{
+  "factory_id": 2,
+  "department_id": 3,
+  "name": "Equipo de Calidad",
+  "description": "Equipo de control de calidad y auditoría",
+  "leader_id": 3
+}
+
+{
+  "factory_id": 1,
+  "department_id": 4,
+  "name": "Equipo Logística",
+  "description": "Equipo de gestión de almacén y distribución",
+  "leader_id": 4
+}
+
+// Añadir miembros a equipos
+
+// POST /teams/1/members
+{
+  "team_id": 1,
+  "employee_id": 5,
+  "role": "Operario Senior",
+  "start_date": "2024-01-01T00:00:00Z"
+}
+
+{
+  "team_id": 1,
+  "employee_id": 6,
+  "role": "Operario",
+  "start_date": "2024-01-01T00:00:00Z"
+}
+
+{
+  "team_id": 1,
+  "employee_id": 7,
+  "role": "Aprendiz",
+  "start_date": "2024-01-01T00:00:00Z"
+}
+
+{
+  "team_id": 2,
+  "employee_id": 8,
+  "role": "Técnico Electricista",
+  "start_date": "2024-01-01T00:00:00Z"
+}
+
+{
+  "team_id": 2,
+  "employee_id": 9,
+  "role": "Técnico Mecánico",
+  "start_date": "2024-01-01T00:00:00Z"
+}
+
+// Asignación individual
+
+// POST /shift-assignments/individual
+{
+  "employee_id": 1,
+  "shift_id": 1,
+  "start_date": "2024-01-01T00:00:00Z",
+  "end_date": "2024-12-31T23:59:59Z"
+}
+
+{
+  "employee_id": 2,
+  "shift_id": 2,
+  "start_date": "2024-01-01T00:00:00Z",
+  "end_date": "2024-06-30T23:59:59Z"
+}
+
+// Asignación por equipo
+
+// POST /shift-assignments/team
+{
+  "team_id": 1,
+  "shift_id": 1,
+  "start_date": "2024-01-01T00:00:00Z",
+  "end_date": "2024-12-31T23:59:59Z"
+}
+
+{
+  "team_id": 2,
+  "shift_id": 3,
+  "start_date": "2024-01-01T00:00:00Z",
+  "end_date": "2024-12-31T23:59:59Z"
+}
+
+// Asignación masiva (bulk)
+
+// POST /shift-assignments/bulk
+{
+  "team_id": 1,
+  "shift_id": 1,
+  "start_date": "2024-01-01T00:00:00Z",
+  "end_date": "2024-12-31T23:59:59Z",
+  "employee_ids": [1, 2, 3]
+}
+
+{
+  "shift_id": 2,
+  "start_date": "2024-02-01T00:00:00Z",
+  "end_date": "2024-02-29T23:59:59Z",
+  "employee_ids": [4, 5, 6, 7, 8]
+}
+
+// Actualizar turno
+
+// PUT /shifts/1
+{
+  "name": "MF_Morning_Updated",
+  "start_time": "2024-01-01T07:30:00Z",
+  "end_time": "2024-01-01T15:30:00Z",
+  "description": "Turno de mañana actualizado",
+  "tolerance": 10,
+  "active": true
+}
+
+// Actualizar equipo
+
+// PUT /teams/1
+{
+  "name": "Equipo de Producción A Actualizado",
+  "description": "Nueva descripción del equipo",
+  "leader_id": 3,
+  "active": true
+}
+

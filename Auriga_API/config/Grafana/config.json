@@ -1,0 +1,311 @@
+{
+  "organizations": [
+    {
+      "name": "CXC",
+      "users": [
+        {
+          "name": "Felipe Cerpa",
+          "email": "felipe.cerpa@fabricacxc.com",
+          "login": "felipe.cerpa",
+          "password": "Password123!",
+          "role": "Admin"
+        },
+        {
+          "name": "Raul Durán",
+          "email": "raul.duran@fabricacxc.com",
+          "login": "raul.duran",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "Marcelo Jara",
+          "email": "marcelo.jara@fabricacxc.com",
+          "login": "marcelo.jara",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "Hugo Barrera",
+          "email": "hugo.barrera@fabricacxc.com",
+          "login": "hugo.barrera",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "Juan Gómez",
+          "email": "juan.gomez@fabricacxc.com",
+          "login": "juan.gomez",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "Pedro Campos",
+          "email": "pedro.campos@fabricacxc.com",
+          "login": "pedro.campos",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "Sebastian Carrasco",
+          "email": "sebastian.carrasco@fabricacxc.com",
+          "login": "sebastian.carrasco",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "Iván Ramirez",
+          "email": "ivan.ramirez@fabricacxc.com",
+          "login": "ivan.ramirez",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "Luis Ortega",
+          "email": "luis.ortega@fabricacxc.com",
+          "login": "luis.ortega",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "Julian Pérez",
+          "email": "julian.perez@fabricacxc.com",
+          "login": "julian.perez",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "Francisco López",
+          "email": "francisco.lopez@fabricacxc.com",
+          "login": "francisco.lopez",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "Diego Cea",
+          "email": "diego.cea@fabricacxc.com",
+          "login": "diego.cea",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "Manuel García",
+          "email": "manuel.garcia@fabricacxc.com",
+          "login": "manuel.garcia",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "Gonzalo Marín",
+          "email": "gonzalo.marin@fabricacxc.com",
+          "login": "gonzalo.marin",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "Kenia Melendez",
+          "email": "kenia.melendez@fabricacxc.com",
+          "login": "kenia.melendez",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "Luisa Martinez",
+          "email": "luisa.martinez@fabricacxc.com",
+          "login": "luisa.martinez",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "Graciela Morales",
+          "email": "graciela.morales@fabricacxc.com",
+          "login": "graciela.morales",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "Silvia Rodriguez",
+          "email": "silvia.rodriguez@fabricacxc.com",
+          "login": "silvia.rodriguez",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "Eduardo González",
+          "email": "eduardo.gonzalez@coexpan.com",
+          "login": "egcxc",
+          "password": "Password123!",
+          "role": "Admin"
+        }
+      ],
+      "teams": [
+        {
+          "name": "CX_Operations",
+          "members": ["felipe.cerpa"]
+        },
+        {
+          "name": "CXC_Production",
+          "members": ["raul.duran", "marcelo.jara", "hugo.barrera", "juan.gomez", "pedro.campos"]
+        },
+        {
+          "name": "CXC_Maintenance",
+          "members": ["sebastian.carrasco", "ivan.ramirez", "luis.ortega", "julian.perez"]
+        },
+        {
+          "name": "CXC_Projects",
+          "members": ["francisco.lopez", "diego.cea", "manuel.garcia", "gonzalo.marin"]
+        },
+        {
+          "name": "CXC_Quality",
+          "members": ["kenia.melendez", "luisa.martinez", "graciela.morales", "silvia.rodriguez"]
+        },
+        {
+          "name": "CXC_IT",
+          "members": ["egcxc"]
+        }
+      ]
+    },
+    {
+      "name": "FSP",
+      "users": [
+        {
+          "name": "Jean Dupont",
+          "email": "jean.dupont@fabricacxc.com",
+          "login": "jean.dupont",
+          "password": "Password123!",
+          "role": "Admin"
+        },
+        {
+          "name": "Davir BROUTIN",
+          "email": "davir.broutin@fabricacxc.com",
+          "login": "davir.broutin",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "David WALOCHA",
+          "email": "david.walocha@fabricacxc.com",
+          "login": "david.walocha",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "Stéphane RUE",
+          "email": "stephane.rue@fabricacxc.com",
+          "login": "stephane.rue",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "Christophe MAJ",
+          "email": "christophe.maj@fabricacxc.com",
+          "login": "christophe.maj",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "Frédéric VAN-MELKEBEKE",
+          "email": "frederic.vanmelkebeke@fabricacxc.com",
+          "login": "frederic.vanmelkebeke",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "Anthony DUBE",
+          "email": "anthony.dube@fabricacxc.com",
+          "login": "anthony.dube",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "Christophe PAVION",
+          "email": "christophe.pavion@fabricacxc.com",
+          "login": "christophe.pavion",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "Hugo PIERSON",
+          "email": "hugo.pierson@fabricacxc.com",
+          "login": "hugo.pierson",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "Etienne Menard",
+          "email": "etienne.menard@fabricacxc.com",
+          "login": "etienne.menard",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "Marie Lefèvre",
+          "email": "marie.lefevre@fabricacxc.com",
+          "login": "marie.lefevre",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "Pierre Moreau",
+          "email": "pierre.moreau@fabricacxc.com",
+          "login": "pierre.moreau",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "Julie Arsénio",
+          "email": "julie.arsenio@fabricacxc.com",
+          "login": "julie.arsenio",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "Vincent FROMONT",
+          "email": "vincent.fromont@fabricacxc.com",
+          "login": "vincent.fromont",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "Nicolas ZAKHAROFF",
+          "email": "nicolas.zakharoff@fabricacxc.com",
+          "login": "nicolas.zakharoff",
+          "password": "Password123!",
+          "role": "Editor"
+        },
+        {
+          "name": "Patrice BELLAY",
+          "email": "pbellay@coexpan.com",
+          "login": "pbfsp",
+          "password": "Password123!",
+          "role": "Admin"
+        }
+      ],
+      "teams": [
+        {
+          "name": "FSP_Operations",
+          "members": ["jean.dupont"]
+        },
+        {
+          "name": "FSP_Produccion",
+          "members": ["davir.broutin", "david.walocha", "stephane.rue", "christophe.maj"]
+        },
+        {
+          "name": "FSP_Maintenance",
+          "members": ["frederic.vanmelkebeke", "anthony.dube", "christophe.pavion"]
+        },
+        {
+          "name": "FSP_Projects",
+          "members": ["hugo.pierson", "etienne.menard", "marie.lefevre", "pierre.moreau"]
+        },
+        {
+          "name": "FSP_Quality",
+          "members": ["julie.arsenio", "vincent.fromont", "nicolas.zakharoff"]
+        },
+        {
+          "name": "FSP_IT",
+          "members": ["pbfsp"]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,182 @@
+{
+  "ID": 136,
+  "Product": {
+    "ID": 79,
+    "Name": "3GEB162752-HDA",
+    "ProductTypeName": "Motor_AC",
+    "Manufacturer": "ABB",
+    "Family": "M3EB",
+    "Description": "Motor HDP",
+    "FeatureValues": [
+      {
+        "Name": "Maximum Speed",
+        "Symbol": "Nmax",
+        "Unit": "rpm",
+        "ValueType": "number",
+        "VisuOrder": 9,
+        "StringValue": "",
+        "NumberValue": 3750
+      },
+      {
+        "Name": "Frame",
+        "Symbol": "",
+        "Unit": "",
+        "ValueType": "string",
+        "VisuOrder": 11,
+        "StringValue": "M3EB 160E 4",
+        "NumberValue": 0
+      },
+      {
+        "Name": "Bearing_NDE",
+        "Symbol": "",
+        "Unit": "",
+        "ValueType": "string",
+        "VisuOrder": 18,
+        "StringValue": "6309-2Z/C3",
+        "NumberValue": 0
+      },
+      {
+        "Name": "Frequency",
+        "Symbol": "f",
+        "Unit": "Hz",
+        "ValueType": "number",
+        "VisuOrder": 5,
+        "StringValue": "",
+        "NumberValue": 50.8
+      },
+      {
+        "Name": "Nominal Speed",
+        "Symbol": "Nn",
+        "Unit": "rpm",
+        "ValueType": "number",
+        "VisuOrder": 4,
+        "StringValue": "",
+        "NumberValue": 1500
+      },
+      {
+        "Name": "Power Factor",
+        "Symbol": "PF",
+        "Unit": "",
+        "ValueType": "number",
+        "VisuOrder": 6,
+        "StringValue": "",
+        "NumberValue": 0.845
+      },
+      {
+        "Name": "TempSensor",
+        "Symbol": "",
+        "Unit": "",
+        "ValueType": "string",
+        "VisuOrder": 13,
+        "StringValue": "Pt100",
+        "NumberValue": 0
+      },
+      {
+        "Name": "EfficiencyClass",
+        "Symbol": "",
+        "Unit": "",
+        "ValueType": "string",
+        "VisuOrder": 16,
+        "StringValue": "IE3",
+        "NumberValue": 0
+      },
+      {
+        "Name": "Stator Current",
+        "Symbol": "Is",
+        "Unit": "Aac",
+        "ValueType": "number",
+        "VisuOrder": 3,
+        "StringValue": "",
+        "NumberValue": 107.7
+      },
+      {
+        "Name": "Stator Voltage",
+        "Symbol": "Vs",
+        "Unit": "Vac",
+        "ValueType": "number",
+        "VisuOrder": 2,
+        "StringValue": "",
+        "NumberValue": 400
+      },
+      {
+        "Name": "Water Flow",
+        "Symbol": "Q",
+        "Unit": "m3/h",
+        "ValueType": "number",
+        "VisuOrder": 10,
+        "StringValue": "",
+        "NumberValue": 0
+      },
+      {
+        "Name": "Cooling",
+        "Symbol": "",
+        "Unit": "",
+        "ValueType": "string",
+        "VisuOrder": 12,
+        "StringValue": "AirCooling: Forze",
+        "NumberValue": 0
+      },
+      {
+        "Name": "MountingPosition",
+        "Symbol": "",
+        "Unit": "",
+        "ValueType": "string",
+        "VisuOrder": 14,
+        "StringValue": "IMB35 - IM2001",
+        "NumberValue": 0
+      },
+      {
+        "Name": "Bearing_DE",
+        "Symbol": "",
+        "Unit": "",
+        "ValueType": "string",
+        "VisuOrder": 17,
+        "StringValue": "NU312/LGMT3",
+        "NumberValue": 0
+      },
+      {
+        "Name": "Nominal Power",
+        "Symbol": "PN",
+        "Unit": "kW",
+        "ValueType": "number",
+        "VisuOrder": 1,
+        "StringValue": "",
+        "NumberValue": 59
+      },
+      {
+        "Name": "Torque",
+        "Symbol": "T",
+        "Unit": "Nm",
+        "ValueType": "number",
+        "VisuOrder": 8,
+        "StringValue": "",
+        "NumberValue": 375
+      },
+      {
+        "Name": "InsulationClass",
+        "Symbol": "",
+        "Unit": "",
+        "ValueType": "string",
+        "VisuOrder": 15,
+        "StringValue": "H",
+        "NumberValue": 0
+      },
+      {
+        "Name": "Efficiency",
+        "Symbol": "η",
+        "Unit": "%",
+        "ValueType": "number",
+        "VisuOrder": 7,
+        "StringValue": "",
+        "NumberValue": 93.4
+      }
+    ],
+    "Documents": []
+  },
+  "Location": "CX_L01",
+  "TechCode": 111111111111,
+  "Code": "Motor",
+  "Sn": "111111111111_XX",
+  "SapCode": "",
+  "Documents": []
+}

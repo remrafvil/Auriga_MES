@@ -1,0 +1,104 @@
+app:
+  port: :8081
+  zap: development     # development or production
+  name: Auriga_API
+  version: 0.0.1
+database:
+  host: 192.168.122.211
+  port: 33307
+  user: jr
+  password: lHevDgr_aqHDlBOpQirf28
+  name: CXP_installed_base
+  timezone: Europe/Madrid #UTC
+grafana1:
+  host: 192.168.122.211
+  port: 33003
+grafana2:
+  host: 192.168.122.211
+  port: 33001
+influxdbs:
+  CXB:
+    host: 172.24.1.5
+    port: 38086
+    token: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+    org: CXB
+    bucket: CXB
+  CXC:
+    host: 200.75.2.109
+    port: 38086
+    token: TYzPrJX5qlJ2o47y6ZqTRRgc3pzjA_kuDgYTkAeCaP9Z-pFaNo6a3ZGlQr2lBKxUkET7vjhgusNS3FtXUzlTEw==
+    org: CXC
+    bucket: CXC
+  CXD:
+    host: 172.27.1.5
+    port: 38086
+    token: BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+    org: CXD
+    bucket: CXD
+  CXE:
+    host: 172.28.1.5
+    port: 38086
+    token: CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+    org: CXE
+    bucket: CXE
+  CXF:
+    host: 172.16.1.5
+    port: 38086
+    token: DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+    org: CXF
+    bucket: CXF
+  CXM:
+    host: 172.17.1.5
+    port: 38086
+    token: EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+    org: CXM
+    bucket: CXM
+  EXT:
+    host: 172.18.1.5
+    port: 38086
+    token: FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+    org: EXT
+    bucket: EXT
+  FPC:
+    host: 172.19.1.5
+    port: 38086
+    token: GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+    org: FPC
+    bucket: FPC
+  FPB:
+    host: 172.20.1.5
+    port: 38086
+    token: HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+    org: FPB
+    bucket: FPB
+  FSP:
+    host: 172.21.99.1
+    port: 38086
+    token: TYzPrJX5qlJ2o47y6ZqTRRgc3pzjA_kuDgYTkAeCaP9Z-pFaNo6a3ZGlQr2lBKxUkET7vjhgusNS3FtXUzlTEw==
+    org: FSP
+    bucket: FSP
+  MNT:
+    host: 172.22.1.5
+    port: 38086
+    token: IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
+    org: MNT
+    bucket: MNT
+sapdb:
+  url: "https://l20163-iflmap.hcisbp.eu1.hana.ondemand.com/http/SAP_RFC_IOT_DHM"
+  auth: "czAwMjA2OTUzMjI6MUxhbnRlcltd"
+auth:
+  issuer: "http://18.232.248.24:38006"
+  client_id: "EGngNT1YYHtfLVGuKvzUaN17X3IWr7ssbUrdJB7H"
+  client_secret: "nMiUhscV21vBmhZ4r69Uju8k6TojXkYlQiqcIgTZRHamzV1nlj4mNxh9Krpl0tuZ54RylMvwENK1rYf3hn0gHzrM2ay5hVcd04wDlElSee5Ku02RirCd1lq8ka1WZOhM"
+  redirect_url: "http://192.168.122.211:8081/auth/callback"
+  jwks_endpoint: "http://18.232.248.24:38006/application/o/cx-auriga/jwks/"
+  jwks_cache_ttl: 1h
+  token_cache_ttl: 5m
+workera:
+  url: "https://workera.com/apiClient/v1/"
+  API_USER: "eduardo.gonzalez@coexpan.com"
+  API_KEY: "e6d764d834f9c9f6bbc054064f6e959d"
+
+  # "https://workera.com/apiClient/v1/attendanceData"
+  #
+

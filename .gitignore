@@ -1,0 +1,7 @@
+.env
+.env_CXC
+.env_FSP
+config/settings.yml
+.vscode
+AurigaPassword.pem
+auriga-api_0.0.01.tar
