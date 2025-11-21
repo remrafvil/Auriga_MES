@@ -30,10 +30,10 @@ func New(s *config.Settings, ctx context.Context) (*gorm.DB, error) {
 	//dsn := "host=192.168.8.203 user=tdfsp password=lHevDgr_aqHDlBOpQirf28 dbname=InstalledBase port=33307 sslmode=disable TimeZone=Europe/Madrid"
 	// TEST NEW ASSET
 	//dsn := "host=18.232.248.24 user=tdcx password=VwFODDerW8PK_vsAq6Fs31 dbname=CX_OT_CX port=33307 sslmode=disable TimeZone=America/New_York"
-	//dsn := "host=192.168.122.211 user=jr password=lHevDgr_aqHDlBOpQirf28 dbname=InstalledBase port=33307 sslmode=disable TimeZone=Europe/Madrid"
+	dsn := "host=192.168.122.211 user=jr password=lHevDgr_aqHDlBOpQirf28 dbname=InstalledBase port=33307 sslmode=disable TimeZone=Europe/Madrid"
 
-	db, err := gorm.Open(postgres.Open(connectionString), &gorm.Config{})
-	//db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	//db, err := gorm.Open(postgres.Open(connectionString), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		dbConnectionMessage := fmt.Sprintf("Database - %s - Connection Failure:%s", s.DB.Name, err)
 		log.Println(dbConnectionMessage)

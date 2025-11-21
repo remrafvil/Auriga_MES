@@ -27,10 +27,14 @@ func MainMiddlewares(e *echo.Echo, s *config.Settings, logger *zap.Logger) {
 	log.Println("*****************  *****************    Inserto los MainMiddlewares *****************  *****************")
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+
+	frontendURL := "http://192.168.122.211:5826"
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{grafanaConnection1, grafanaConnection2},
-		AllowHeaders: []string{"*"},
-		AllowMethods: []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
+		AllowOrigins:     []string{frontendURL, grafanaConnection1, grafanaConnection2},
+		AllowHeaders:     []string{"*"},
+		AllowMethods:     []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
+		AllowCredentials: true,  // ✅ IMPORTANTE: Permitir cookies
+		MaxAge:           86400, // ✅ Cache preflight requests
 	}))
 	//	e.Use(middleware.Gzip())
 	// Middlewares específicos según entorno

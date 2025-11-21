@@ -2,6 +2,7 @@ package hAuth
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
@@ -545,6 +546,18 @@ func (h *handler) healthHandler(c echo.Context) error {
 }
 
 func (h *handler) loginHandler(c echo.Context) error {
+	// Verificar si ya está autenticado mirando la cookie
+	cookie, err := c.Cookie("auth_token")
+	if err == nil && cookie.Value != "" {
+		// Validar el token
+		token, err := h.service.ValidateToken(cookie.Value)
+		if err == nil && token.Valid {
+			// Si ya tiene token válido, redirigir al frontend
+			frontendURL := "http://192.168.122.211:5826/dashboard"
+			return c.Redirect(http.StatusFound, frontendURL)
+		}
+	}
+
 	state, err := generateState()
 	if err != nil {
 		h.logger.Error("Failed to generate state", zap.Error(err))
@@ -601,55 +614,62 @@ func (h *handler) authCallbackHandler(c echo.Context) error {
 		maxAge = 24 * 3600
 	}
 
-	// Cookie principal con el token JWT (HTTP-only para seguridad)
+	// ✅ CONFIGURACIÓN CORREGIDA DE COOKIES - Sin dominio específico
+	// 1. Cookie principal con el token JWT (HTTP-only para seguridad)
 	authCookie := &http.Cookie{
 		Name:     "auth_token",
 		Value:    token.AccessToken,
 		Path:     "/",
 		HttpOnly: true,
-		Secure:   false,
-		SameSite: http.SameSiteLaxMode,
+		Secure:   false,                // ✅ false para desarrollo HTTP
+		SameSite: http.SameSiteLaxMode, // ✅ Cambiado a Lax
 		MaxAge:   maxAge,
 		Expires:  tokenExpiry,
 	}
 	c.SetCookie(authCookie)
 
-	// Cookie con información básica del empleado
+	// 2. Cookie con información básica del empleado (accesible desde React)
 	employeeName := employee.FirstName + " " + employee.LastName
-	employeeData := fmt.Sprintf("%s|%s|%s", employee.AuthentikID, employeeName, employee.Email)
+	userData := map[string]interface{}{
+		"id":    employee.AuthentikID,
+		"name":  employeeName,
+		"email": employee.Email,
+	}
+
+	userDataJSON, _ := json.Marshal(userData)
 	employeeCookie := &http.Cookie{
 		Name:     "user_data",
-		Value:    base64.StdEncoding.EncodeToString([]byte(employeeData)),
+		Value:    base64.StdEncoding.EncodeToString(userDataJSON),
 		Path:     "/",
-		HttpOnly: false,
+		HttpOnly: false, // ✅ Accesible desde JavaScript
 		Secure:   false,
-		SameSite: http.SameSiteLaxMode,
+		SameSite: http.SameSiteLaxMode, // ✅ Cambiado a Lax
 		MaxAge:   maxAge,
 		Expires:  tokenExpiry,
 	}
 	c.SetCookie(employeeCookie)
 
-	// Cookie de sesión activa
+	// 3. Cookie de sesión activa
 	sessionCookie := &http.Cookie{
 		Name:     "session_active",
 		Value:    "true",
 		Path:     "/",
 		HttpOnly: false,
 		Secure:   false,
-		SameSite: http.SameSiteLaxMode,
+		SameSite: http.SameSiteLaxMode, // ✅ Cambiado a Lax
 		MaxAge:   maxAge,
 		Expires:  tokenExpiry,
 	}
 	c.SetCookie(sessionCookie)
 
-	// LOG REDUCIDO: Solo información esencial
-	h.logger.Info("User authenticated",
+	h.logger.Info("User authenticated and cookies set",
 		zap.String("authentik_id", userInfo.Sub),
 		zap.Uint("employee_id", employee.ID),
 		zap.String("email", employee.Email))
 
-	// Redirigir al dashboard
-	return c.Redirect(http.StatusFound, "/dashboard")
+	// ✅ REDIRIGIR AL FRONTEND REACT
+	frontendURL := "http://192.168.122.211:5826/dashboard"
+	return c.Redirect(http.StatusFound, frontendURL)
 }
 
 func (h *handler) homeHandler(c echo.Context) error {
@@ -660,4 +680,49 @@ func (h *handler) homeHandler(c echo.Context) error {
 	}
 
 	return h.loginPageHandler(c)
+}
+
+// Handler para verificar autenticación desde React
+func (h *handler) authCheckHandler(c echo.Context) error {
+	// Verificar si hay token en cookie
+	cookie, err := c.Cookie("auth_token")
+	if err != nil || cookie.Value == "" {
+		h.logger.Debug("No auth_token cookie found",
+			zap.Error(err),
+			zap.String("path", c.Path()))
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"authenticated": false,
+			"message":       "No authentication token found",
+		})
+	}
+
+	// Validar el token
+	token, err := h.service.ValidateToken(cookie.Value)
+	if err != nil || !token.Valid {
+		h.logger.Debug("Invalid token",
+			zap.Error(err),
+			zap.String("path", c.Path()))
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"authenticated": false,
+			"message":       "Invalid token: " + err.Error(),
+		})
+	}
+
+	// Obtener información del usuario desde el contexto
+	userID, userEmail, userName, userGroups, organization := getUserInfoFromContext(c)
+
+	h.logger.Debug("User authenticated successfully",
+		zap.String("user_id", userID),
+		zap.String("path", c.Path()))
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"authenticated": true,
+		"user": map[string]interface{}{
+			"id":     userID,
+			"email":  userEmail,
+			"name":   userName,
+			"groups": userGroups,
+		},
+		"organization": getOrganizationSummary(organization),
+	})
 }

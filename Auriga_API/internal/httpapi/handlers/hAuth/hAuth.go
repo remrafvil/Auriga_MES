@@ -52,6 +52,11 @@ func (h *handler) RegisterRoutes(e *echo.Echo, s *config.Settings) {
 	e.POST("/auth/logout", h.logoutHandler)
 	e.GET("/auth/callback", h.authCallbackHandler)
 
+	// ✅ NUEVA: Endpoint para obtener información del usuario desde React
+	e.GET("/api/auth/user", h.getCurrentUserHandler)
+	// ✅ NUEVO: Endpoint para verificar autenticación desde React
+	e.GET("/api/auth/check", h.authCheckHandler)
+
 	// ✅ Dashboard protegido - CREAR GRUPO SEPARADO PARA RUTAS PROTEGIDAS NO-API
 	protected := e.Group("")
 	protected.Use(h.authMiddleware.CombinedMiddleware())

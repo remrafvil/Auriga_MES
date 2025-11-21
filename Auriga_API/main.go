@@ -47,7 +47,7 @@ func main() {
 		fx.Provide(
 			func() context.Context { return ctx }, // Proveer el contexto raíz
 			//context.Background,
-			config.NewEnv,
+			config.New,
 			databases.New,
 			databases.NewInfluxClientManager,
 			databases.NewWorkeraClient,
