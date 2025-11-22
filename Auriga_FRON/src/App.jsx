@@ -20,6 +20,8 @@ function App() {
               </ProtectedRoute>
             } 
           />
+          {/* Ruta de fallback */}
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </div>
     </Router>

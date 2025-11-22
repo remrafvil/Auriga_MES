@@ -32,27 +32,79 @@ export const getCurrentUser = () => {
   return session || null;
 };
 
+// En utils/auth.js
 export const checkServerAuth = async () => {
   try {
+    console.log('🔐 Checking server authentication...')
+    
     const response = await fetch('/api/auth/check', {
       method: 'GET',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },
-    });
+    })
 
+    console.log('🔐 Auth check response status:', response.status)
+    
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      console.log('❌ Auth check failed with status:', response.status)
+      return { 
+        authenticated: false, 
+        message: `HTTP error! status: ${response.status}` 
+      }
     }
 
-    const data = await response.json();
-    return data;
+    const data = await response.json()
+    console.log('✅ Auth check response data:', data)
+    
+    return data
   } catch (error) {
-    console.error('Error checking server auth:', error);
-    return { authenticated: false };
+    console.error('❌ Error checking server auth:', error)
+    return { 
+      authenticated: false, 
+      message: error.message 
+    }
   }
-};
+}
+
+// Función mejorada para extraer organización del JWT
+export const extractOrganizationFromJWT = (jwtToken) => {
+  try {
+    if (!jwtToken) {
+      console.log('❌ No JWT token provided')
+      return null
+    }
+    
+    console.log('🔐 Extracting organization from JWT...')
+    const parts = jwtToken.split('.')
+    if (parts.length !== 3) {
+      console.log('❌ Invalid JWT format')
+      return null
+    }
+    
+    const payload = JSON.parse(atob(parts[1]))
+    console.log('✅ JWT payload:', payload)
+    
+    if (payload.organization) {
+      console.log('✅ Organization found in JWT:', payload.organization)
+      return payload.organization
+    } else {
+      console.log('❌ No organization found in JWT')
+      return null
+    }
+  } catch (error) {
+    console.error('❌ Error extracting organization from JWT:', error)
+    return null
+  }
+}
+
+// Función para obtener el token JWT de las cookies
+export const getAuthToken = () => {
+  const token = getCookie('auth_token')
+  console.log('🔐 Auth token from cookies:', token ? 'Found' : 'Not found')
+  return token
+}
 
 export const logout = async () => {
   try {
@@ -109,8 +161,32 @@ export const apiRequest = async (endpoint, options = {}) => {
     throw error;
   }
 };
-
+// En auth.js, mejora esta función:
+export const fetchCompleteUserData = async () => {
+  try {
+    console.log('🔄 [fetchCompleteUserData] Obteniendo datos completos...');
+    
+    // Obtener datos del usuario
+    const userResponse = await fetch('/api/users/me', {
+      credentials: 'include'
+    });
+    
+    if (!userResponse.ok) {
+      throw new Error(`Error usuarios: ${userResponse.status}`);
+    }
+    
+    const userData = await userResponse.json();
+    console.log('✅ [fetchCompleteUserData] Datos recibidos:', userData);
+    
+    return userData;
+  } catch (error) {
+    console.error('❌ [fetchCompleteUserData] Error:', error);
+    throw error;
+  }
+};
 export const fetchUserData = () => apiRequest('/users/me');
 export const fetchTokenInfo = () => apiRequest('/token-info');
 export const fetchMyGroups = () => apiRequest('/my-groups');
 export const fetchProtectedData = () => apiRequest('/protected-data');
+
+

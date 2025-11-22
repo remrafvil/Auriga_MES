@@ -3,11 +3,13 @@ import {
   isAuthenticated, 
   getCurrentUser, 
   checkServerAuth,
-  fetchUserData 
+  fetchCompleteUserData,
+  extractOrganizationFromJWT,
+  getCookie
 } from '../utils/auth';
 
 export const useAuth = () => {
-  const [auth, setAuth] = useState({
+  const [authState, setAuthState] = useState({
     isAuthenticated: false,
     user: null,
     serverAuth: null,
@@ -19,35 +21,64 @@ export const useAuth = () => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        // Primero verificar autenticación en el servidor
+        console.log('🔍 [useAuth] Iniciando verificación...');
+        
+        // Verificar autenticación primero
         const serverAuth = await checkServerAuth();
+        console.log('🔐 [useAuth] Auth check:', serverAuth);
         
         if (serverAuth.authenticated) {
-          // Si el servidor dice que está autenticado, obtener datos completos
-          const apiUserData = await fetchUserData();
+          console.log('🎉 [useAuth] Usuario autenticado, obteniendo datos...');
           
-          setAuth({
-            isAuthenticated: true,
-            user: serverAuth.user || getCurrentUser(),
-            serverAuth,
-            apiUserData,
-            isLoading: false,
-            error: null
-          });
+          try {
+            // Obtener datos completos
+            const completeUserData = await fetchCompleteUserData();
+            console.log('📦 [useAuth] Datos completos recibidos:', completeUserData);
+            
+            // ✅ CORRECCIÓN: Extraer datos de from_context y organization_structure
+            const userData = completeUserData.from_context || completeUserData.user || serverAuth.user;
+            const organizationData = completeUserData.organization_structure || completeUserData.organization;
+            
+            console.log('👤 [useAuth] User data extraído:', userData);
+            console.log('🏢 [useAuth] Organization data extraído:', organizationData);
+            
+            setAuthState({
+              isAuthenticated: true,
+              user: userData,
+              serverAuth,
+              apiUserData: {
+                ...completeUserData,
+                user: userData,
+                organization: organizationData
+              },
+              isLoading: false,
+              error: null
+            });
+          } catch (apiError) {
+            console.error('❌ [useAuth] Error obteniendo datos:', apiError);
+            // Usar datos del servidor como fallback
+            setAuthState({
+              isAuthenticated: true,
+              user: serverAuth.user,
+              serverAuth,
+              apiUserData: null,
+              isLoading: false,
+              error: 'Error cargando datos adicionales'
+            });
+          }
         } else {
-          // No autenticado en el servidor
-          setAuth({
+          setAuthState({
             isAuthenticated: false,
             user: null,
             serverAuth,
             apiUserData: null,
             isLoading: false,
-            error: serverAuth.message || 'Not authenticated'
+            error: serverAuth.message
           });
         }
       } catch (error) {
-        console.error('Auth check error:', error);
-        setAuth({
+        console.error('💥 [useAuth] Error:', error);
+        setAuthState({
           isAuthenticated: false,
           user: null,
           serverAuth: null,
@@ -61,5 +92,5 @@ export const useAuth = () => {
     checkAuth();
   }, []);
 
-  return auth;
+  return authState;
 };

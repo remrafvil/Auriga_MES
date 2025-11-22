@@ -1,21 +1,25 @@
 import React, { useEffect, useState } from 'react'
 import { checkServerAuth } from '../utils/auth'
+import './ProtectedRoute.css'
 
 const ProtectedRoute = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(null)
+  const [authStatus, setAuthStatus] = useState('checking') // 'checking', 'authenticated', 'unauthenticated'
 
   useEffect(() => {
     const verifyAuth = async () => {
       try {
         const auth = await checkServerAuth()
-        setIsAuthenticated(auth.authenticated)
+        console.log('ProtectedRoute auth check:', auth)
         
-        if (!auth.authenticated) {
+        if (auth.authenticated) {
+          setAuthStatus('authenticated')
+        } else {
+          setAuthStatus('unauthenticated')
           window.location.href = '/login'
         }
       } catch (error) {
-        console.error('Auth verification failed:', error)
-        setIsAuthenticated(false)
+        console.error('Auth verification failed in ProtectedRoute:', error)
+        setAuthStatus('unauthenticated')
         window.location.href = '/login'
       }
     }
@@ -23,31 +27,16 @@ const ProtectedRoute = ({ children }) => {
     verifyAuth()
   }, [])
 
-  if (isAuthenticated === null) {
+  if (authStatus === 'checking') {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '100vh' 
-      }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{
-            border: '4px solid #f3f3f3',
-            borderTop: '4px solid #007bff',
-            borderRadius: '50%',
-            width: '40px',
-            height: '40px',
-            animation: 'spin 1s linear infinite',
-            margin: '0 auto 20px'
-          }}></div>
-          <p>Verificando autenticación...</p>
-        </div>
+      <div className="protected-route-loading">
+        <div className="loading-spinner"></div>
+        <p>Verificando autenticación...</p>
       </div>
     )
   }
 
-  if (!isAuthenticated) {
+  if (authStatus === 'unauthenticated') {
     return null // Ya se redirigió a login
   }
 
